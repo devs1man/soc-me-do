@@ -3,41 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile Page</title>
+    <title>movie night planner-profile</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="prof-styling.css" />
   </head>
   <body>
     <header>
+      <div class="logo">movie night(name)</div>
       <div class="profile-icon"></div>
       <div class="search-bar">
-        <input type="text" placeholder="Enter the genres or movie name" />
+        <input type="text" placeholder="search by movie or genre" />
+        <button class="search-button">search</button>
       </div>
     </header>
     <div class="container">
       <aside class="sidebar">
-        <p>Groups you are in</p>
+        <h1>Your Groups</h1>
         <ul>
-          <li>Group 1</li>
-          <li>Group 2</li>
-          <li>Group 3</li>
+          <li>Group A</li>
+          <li>Group B</li>
+          <li>Group C</li>
         </ul>
-        <p>Groups in which you are the head</p>
+        <h1>Head Of</h1>
         <ul>
-          <li>Group 1</li>
-          <li>Group 2</li>
-          <li>Group 3</li>
+          <li>Group X</li>
+          <li>Group y</li>
         </ul>
-        <div class="poster-wall"></div>
       </aside>
-      <main class="main-content">
-        <button class="group-button">Make a group to turn on the TV?</button>
+      <main class="main">
+        <div class="poster-grid">
+          <img src="posters/poster1.jpg" class="poster" />
+          <img src="posters/poster2.jpg" class="poster" />
+          <img src="posters/poster3.jpg" class="poster" />
+          <img src="posters/poster4.jpg" class="poster" />
+        </div>
+
+        <div class="bottom-button">
+          <button class="group-button">+ start a new group</button>
+        </div>
       </main>
     </div>
-
-    <script src="poster.js"></script>
   </body>
 </html>

@@ -21,7 +21,7 @@ body {
   font-family: "Press Start 2P", monospace;
   font-size: 12px;
   padding: 12px 24px;
-  background-color: #1c1e7d;
+  background-color: #2d1a01;
   color: white;
   border: none;
   cursor: pointer;
@@ -34,14 +34,14 @@ body {
   transform: translateY(2px);
 }
 .signIn:hover {
-  color: aqua;
+  color: rgb(243, 66, 7);
 }
 
 .signOut {
   font-family: "Press Start 2P", monospace;
   font-size: 12px;
   padding: 12px 24px;
-  background-color: #1c1e7d;
+  background-color: #2d1a01;
   color: rgb(24, 24, 24);
   border: none;
   cursor: pointer;

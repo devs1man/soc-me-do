@@ -9,32 +9,28 @@ document.addEventListener("DOMContentLoaded", () => {
     "posters/poster5.jpg",
     "posters/poster6.jpg",
   ];
-  const screenWidth = window.innerWidth;
-  const screenHeight = window.innerHeight;
-  const totalDuration = 6000;
-  const interval = 250;
-  const count = Math.floor(totalDuration / interval);
-  let posters = [];
-
+  const wallWidth = posterWall.offsetWidth;
+  const wallHeight = posterWall.offsetHeight;
+  const interval = 300;
   let i = 0;
-  const appearInterval = setInterval(() => {
-    if (i >= count) {
-      clearInterval(appearInterval);
-      fadeOutPosters();
+
+  const appearPosters = setInterval(() => {
+    if (i >= posterImages.length) {
+      clearInterval(appearPosters);
+      setTimeout(showPopup, 1000);
       return;
     }
     const img = document.createElement("img");
-    img.src = posterImages[Math.floor(Math.random() * posterImages.length)];
+    img.src = posterImages[i];
     img.classList.add("poster");
 
-    const x = Math.random() * (screenWidth - 100);
-    const y = Math.random() * (screenHeight - 150);
+    const x = Math.random() * (wallWidth - 120);
+    const y = Math.random() * (wallHeight - 160);
 
     img.style.left = `${x}px`;
     img.style.top = `${y}px`;
 
     posterWall.appendChild(img);
-    posters.push(img);
 
     requestAnimationFrame(() => {
       img.classList.add("show");
@@ -42,17 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     i++;
   }, interval);
-
-  function fadeOutPosters() {
-    posters.forEach((poster, idx) => {
-      setTimeout(() => {
-        poster.classList.remove("show");
-        poster.classList.add("fade-out");
-      }, idx * 50);
-    });
-    setTimeout(() => {
-      posterWall.remove();
-      document.body.classList.add("reveal");
-    }, posters.length * 50 + 1500);
+  function showPopup() {
+    const popup = document.createElement("div");
+    popup.classList.add("popup-box");
+    popup.innerText = "Make a group and turn on your TV?";
+    document.body.appendChild(popup);
   }
 });
