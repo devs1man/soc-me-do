@@ -8,11 +8,12 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="" />
     <link rel="stylesheet" href="prof-styling.css" />
   </head>
   <body>
     <header>
-      <div class="logo">movie night(name)</div>
+      <h1 class="harry-title">MOVIE NIGHT</h1>
       <div class="profile-icon"></div>
       <div class="search-bar">
         <input type="text" placeholder="search by movie or genre" />
@@ -21,30 +22,55 @@
     </header>
     <div class="container">
       <aside class="sidebar">
-        <h1>Your Groups</h1>
+        <h3>Your Groups</h3>
         <ul>
           <li>Group A</li>
           <li>Group B</li>
           <li>Group C</li>
         </ul>
-        <h1>Head Of</h1>
+        <h3>Head Of</h3>
         <ul>
           <li>Group X</li>
           <li>Group y</li>
         </ul>
       </aside>
-      <main class="main">
-        <div class="poster-grid">
-          <img src="posters/poster1.jpg" class="poster" />
-          <img src="posters/poster2.jpg" class="poster" />
-          <img src="posters/poster3.jpg" class="poster" />
-          <img src="posters/poster4.jpg" class="poster" />
-        </div>
 
+      <main class="main">
+        <div class="poster-scroll" id="posterScroll">
+          <img src="posters/poster1.jpg" class="poster" alt="poster1" />
+          <img src="posters/poster2.jpg" class="poster" alt="poster2" />
+          <img src="posters/poster3.jpg" class="poster" alt="poster3" />
+          <img src="posters/poster4.jpg" class="poster" alt="poster4" />
+          <img src="posters/poster5.jpg" class="poster" alt="poster5" />
+          <img src="posters/poster6.jpg" class="poster" alt="poster6" />
+          <img src="posters/poster7.jpg" class="poster" alt="poster7" />
+          <img src="posters/poster8.jpg" class="poster" alt="poster8" />
+        </div>
         <div class="bottom-button">
           <button class="group-button">+ start a new group</button>
         </div>
       </main>
     </div>
+
+    <script>
+      const scrollContainer = document.getElementById("posterScroll");
+
+      let scrollSpeed = 1;
+
+      function autoScroll() {
+        scrollContainer.scrollLeft += scrollSpeed;
+
+        if (
+          scrollContainer.scrollLeft + scrollContainer.clientWidth >=
+          scrollContainer.scrollWidth
+        ) {
+          scrollContainer.scrollTo({ left: 0, behavior: auto });
+        }
+
+        requestAnimationFrame(autoScroll);
+      }
+
+      window.addEventListener("load", autoScroll);
+    </script>
   </body>
 </html>

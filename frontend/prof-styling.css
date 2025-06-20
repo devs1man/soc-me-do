@@ -40,13 +40,13 @@ header {
 }
 
 .sidebar {
-  width: 240px;
+  width: 360px;
   background-color: #1b1b2f;
   padding: 30px 20px;
   border-right: 1px solid #444;
 }
 
-.sidebar h1 {
+.sidebar h3 {
   font-size: 1.9rem;
   margin-bottom: 10px;
   color: #ffcc70;
@@ -61,7 +61,6 @@ header {
 
 .sidebar ul :hover {
   background-color: #928ed7;
-  border-radius: 40%;
 }
 
 .sidebar li {
@@ -85,6 +84,7 @@ header {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  margin-right: 20px;
 }
 
 .search-bar input {
@@ -108,25 +108,24 @@ header {
   cursor: pointer;
 }
 
-.poster-grid {
-  flex-grow: 1;
+.poster-scroll {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: nowrap;
+  overflow-x: hidden;
+  white-space: nowrap;
   gap: 20px;
-  overflow: hidden;
-  padding: 0 10px;
+  padding: 20px;
+  scroll-behavior: auto;
+  scrollbar-width: none;
 }
-
+.poster-scroll::-webkit-scrollbar {
+  display: none;
+}
 .poster {
-  flex: 1;
-  height: 100%;
-  width: 100%;
+  width: 220px;
+  height: 320px;
   object-fit: cover;
-  border-radius: 20px;
+  border-radius: 12px;
   border: 2px solid white;
-  max-height: 300px;
 }
 
 .bottom-button {
@@ -138,14 +137,26 @@ header {
   font-size: 10px;
   padding: 12px 24px;
   color: white;
-  background-color: #ff6b6b;
+  background-color: #075c7e;
   border: none;
   border-radius: 14px;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   transition: background 0.3s ease;
+  margin-top: 40px;
 }
 
 .group-button:hover {
   background-color: #ff8787;
+}
+
+@font-face {
+  font-family: "HarryP";
+  src: url("assets/fonts/harrypotter-font.zip") format("truetype");
+}
+
+.harry-title {
+  font-family: "HarryP";
+  font-size: 2rem;
+  color: gold;
 }
