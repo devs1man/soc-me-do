@@ -1,0 +1,92 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Press Start 2P", monospace;
+  background: url("assets/DPS.jpg") center center / cover no-repeat fixed;
+  height: 100vh;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.popup-button {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.signIn {
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px;
+  padding: 12px 24px;
+  background-color: #1c1e7d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  image-rendering: pixelated;
+  box-shadow: 0 0 0 4px #000, -4px -4px 0 0 #ffffff, 4px 4px 0 0 #2b5b32;
+  text-shadow: 1px 1px 0 #000;
+  transition: transform 0.1s ease;
+}
+.signIn:active {
+  transform: translateY(2px);
+}
+.signIn:hover {
+  color: aqua;
+}
+
+.signOut {
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px;
+  padding: 12px 24px;
+  background-color: #1c1e7d;
+  color: rgb(24, 24, 24);
+  border: none;
+  cursor: pointer;
+  image-rendering: pixelated;
+  box-shadow: -4px -4px 0 0 #000, 4px -4px 0 0 #000, -4px 4px 0 0 #000,
+    4px 4px 0 0 #000;
+
+  transition: transform 0.05s ease-in-out;
+  text-shadow: 1px 1px 0 #000;
+}
+.signOut:active {
+  transform: translateY(2px);
+}
+.signOut:hover {
+  color: #1c1e7d;
+}
+.popup-buttons {
+  margin-top: 100px;
+}
+.login-button {
+  margin-top: 20px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  background: none;
+  color: white;
+  cursor: pointer;
+  text-decoration: underline;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.login-button:hover {
+  color: #ffcc00;
+}
+
+body {
+  opacity: 0;
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
