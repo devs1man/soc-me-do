@@ -14,12 +14,13 @@
   <body>
     <header>
       <h1 class="harry-title">MOVIE NIGHT</h1>
-      <div class="profile-icon"></div>
       <div class="search-bar">
         <input type="text" placeholder="search by movie or genre" />
         <button class="search-button">search</button>
+        <div class="profile-icon"></div>
       </div>
     </header>
+
     <div class="container">
       <aside class="sidebar">
         <h3>Your Groups</h3>
@@ -64,7 +65,7 @@
           scrollContainer.scrollLeft + scrollContainer.clientWidth >=
           scrollContainer.scrollWidth
         ) {
-          scrollContainer.scrollTo({ left: 0, behavior: auto });
+          scrollContainer.scrollLeft = 0;
         }
 
         requestAnimationFrame(autoScroll);

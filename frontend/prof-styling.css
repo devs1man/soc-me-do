@@ -13,12 +13,13 @@ body {
   flex-direction: column;
 }
 header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   padding: 20px 40px;
   background-color: #13131f;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   border-bottom: 1px solid #444;
+  gap: 20px;
 }
 
 .logo {
@@ -71,7 +72,7 @@ header {
   font-size: 1.5rem;
 }
 
-.main-content {
+.main {
   flex-grow: 1;
   padding: 30px;
   display: flex;
@@ -83,24 +84,24 @@ header {
 .search-bar {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
-  margin-right: 20px;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
 }
-
 .search-bar input {
   flex-grow: 1;
-  padding: 10px;
-  font-family: "Press Start 2P", monospace;
-  font-size: 10px;
+  padding: 12px;
+  font-size: 14px;
   background: #282c34;
   border: 2px solid #fff;
   color: white;
-  border-radius: 10px;
+  border-radius: 20px;
+  width: 700px;
 }
-
 .search-button {
-  padding: 10px 16px;
-  font-size: 10px;
+  padding: 12px 30px;
+  font-size: 14px;
   background-color: #6c63ff;
   border: none;
   border-radius: 10px;
@@ -110,17 +111,20 @@ header {
 
 .poster-scroll {
   display: flex;
-  overflow-x: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   white-space: nowrap;
   gap: 20px;
   padding: 20px;
-  scroll-behavior: auto;
+  scroll-behavior: smooth;
   scrollbar-width: none;
+  width: 100%;
 }
 .poster-scroll::-webkit-scrollbar {
   display: none;
 }
 .poster {
+  flex: 0 0 auto;
   width: 220px;
   height: 320px;
   object-fit: cover;
@@ -134,7 +138,8 @@ header {
 }
 
 .group-button {
-  font-size: 10px;
+  width: 1000px;
+  font-size: 15px;
   padding: 12px 24px;
   color: white;
   background-color: #075c7e;
@@ -148,15 +153,4 @@ header {
 
 .group-button:hover {
   background-color: #ff8787;
-}
-
-@font-face {
-  font-family: "HarryP";
-  src: url("assets/fonts/harrypotter-font.zip") format("truetype");
-}
-
-.harry-title {
-  font-family: "HarryP";
-  font-size: 2rem;
-  color: gold;
 }

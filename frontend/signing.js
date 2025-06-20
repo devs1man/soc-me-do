@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "login.html";
   });
   stayLoggedOutBtn.addEventListener("click", () => {
-    popup.style.display = "none";
+    popup.style.display = "main.html";
   });
   loginBtn.addEventListener("click", () => {
     window.location.href = "main.html";
