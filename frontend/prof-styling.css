@@ -50,7 +50,7 @@ header {
 .sidebar h3 {
   font-size: 1.9rem;
   margin-bottom: 10px;
-  color: #ffcc70;
+  color: #ac7f2a;
 }
 
 .sidebar ul {
@@ -58,10 +58,11 @@ header {
   margin-top: 10px;
   display: flex;
   flex-direction: column;
+  border-radius: 100%;
 }
 
 .sidebar ul :hover {
-  background-color: #928ed7;
+  background-color: #4f4e63;
 }
 
 .sidebar li {
@@ -153,4 +154,18 @@ header {
 
 .group-button:hover {
   background-color: #ff8787;
+}
+.my-cursive-text {
+  font-family: "Great Vibes", cursive;
+  font-size: 2.5rem;
+  color: gold;
+}
+
+.vintage-title {
+  font-family: "Cinzel", cursive;
+  color: #09568d;
+}
+
+.description-title {
+  font-family: "Lora", serif;
 }
