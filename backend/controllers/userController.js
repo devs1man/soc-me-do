@@ -62,7 +62,30 @@ const loginUser = async (req, res) => {
   }
 };
 
+//when searching for the users for group creation
+const searchUsers = async (req, res) => {
+  const query = req.query.query;
+
+  if (!query)
+    return res.status(400).json({ message: "Search query is required" });
+
+  try {
+    const users = await User.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { email: { $regex: query, $options: "i" } },
+      ],
+    }).select("-password");
+    res.json(users);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to search user", error: err.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  searchUsers,
 };
