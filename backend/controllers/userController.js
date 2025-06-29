@@ -75,6 +75,7 @@ const searchUsers = async (req, res) => {
         { name: { $regex: query, $options: "i" } },
         { email: { $regex: query, $options: "i" } },
       ],
+      _id: { $ne: req.user._id },
     }).select("-password");
     res.json(users);
   } catch (err) {

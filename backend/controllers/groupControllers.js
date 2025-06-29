@@ -37,6 +37,7 @@ const getMyGroups = async (req, res) => {
   }
 };
 
+//admin inviting
 const inviteToGroup = async (req, res) => {
   const { groupId, userId } = req.body;
 
@@ -72,4 +73,77 @@ const inviteToGroup = async (req, res) => {
   }
 };
 
-module.exports = { createGroup, getMyGroups, inviteToGroup };
+//for the other end
+const getMyInvites = async (req, res) => {
+  try {
+    const invites = await Group.find({ invited: req.user._id })
+      .populate("createdBy", "name email")
+      .select("name createdBy");
+    res.json(invites);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to fetch invites", error: err.message });
+  }
+};
+
+const acceptInvite = async (req, res) => {
+  const groupId = req.params.id;
+
+  try {
+    const group = await Group.findById(groupId);
+
+    if (!group) return res.status(400).json({ message: "Group not found" });
+
+    if (!group.invited.includes(req.user._id)) {
+      return res
+        .status(400)
+        .json({ message: "You are not invited to this group" });
+    }
+    group.invited = group.invited.filter(
+      (id) => id.toString() !== req.user._id.toString()
+    );
+    group.members.push(req.user._id);
+    await group.save();
+
+    res.json({ message: "You have joined the group!" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Accepting invite failed", error: err.message });
+  }
+};
+
+const rejectInvite = async (req, res) => {
+  const groupId = req.params.id;
+
+  try {
+    const group = await Group.findById(groupId);
+
+    if (!group) return res.status(404).json({ message: "Group not found" });
+
+    if (!group.invited.includes(req.user._id)) {
+      return res
+        .status(400)
+        .json({ message: "You are not invited to this group" });
+    }
+    group.invited = group.invited.filter(
+      (id) => id.toString() !== req.user._id.toString()
+    );
+    await group.save();
+    res.json({ message: "You have rejected the invited" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Rejecting invite failed", error: err.message });
+  }
+};
+
+module.exports = {
+  createGroup,
+  getMyGroups,
+  inviteToGroup,
+  getMyInvites,
+  acceptInvite,
+  rejectInvite,
+};
