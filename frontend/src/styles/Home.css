@@ -1,0 +1,71 @@
+/* Base layout wrapper */
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* Intro card styling */
+.intro-card {
+  background-color: #5a5a5a;
+  color: white;
+  padding: 40px 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 50px;
+  max-width: 700px;
+  width: 90%;
+}
+
+.intro-card h1 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.intro-card p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+/* Button group styling */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Common button styles */
+.discover-btn,
+.watchlist-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+/* Discover button - red */
+.discover-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.discover-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Watchlist button - blue */
+.watchlist-btn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.watchlist-btn:hover {
+  background-color: #1976d2;
+}

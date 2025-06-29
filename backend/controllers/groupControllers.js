@@ -4,11 +4,12 @@ const { registerUser } = require("./userController");
 const createGroup = async (req, res) => {
   const { name } = req.body;
 
-  if (!name) return res.status(400).json({ message: "Group name is required" });
+  if (!groupName)
+    return res.status(400).json({ message: "Please fill in all the fields" });
 
   try {
     const newGroup = await Group.create({
-      name,
+      name: groupName,
       members: [req.user._id],
       createdBy: req.user._id,
     });

@@ -1,0 +1,45 @@
+.ott-section {
+  padding: 2rem;
+  background-color: #111;
+  color: white;
+  text-align: center;
+}
+
+.ott-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.ott-card {
+  width: 180px;
+  background-color: #1a1a1a;
+  padding: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #000;
+  transition: transform 0.2s ease;
+}
+
+.ott-card:hover {
+  transform: scale(1.05);
+}
+
+.ott-card img {
+  width: 100%;
+  height: 270px; /* Fixed height for all posters */
+  object-fit: cover; /* Ensures image fits nicely without stretching */
+  border-radius: 5px;
+}
+
+.ott-card h3 {
+  font-size: 1rem;
+  margin: 0.5rem 0 0.2rem;
+  color: #fff;
+}
+
+.ott-card p {
+  font-size: 0.8rem;
+  color: #aaa;
+}

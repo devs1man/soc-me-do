@@ -1,0 +1,20 @@
+/* Reset & full-page setup */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Global background (collage or gradient) */
+#root {
+  /* If you have a collage in public/backgrounds/home.jpg: */
+  background: url("/background/home.jpg") center/cover no-repeat;
+  
+  /* OR, if you'd rather use a gradient: */
+  /* background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364); */
+  
+  background-attachment: fixed;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+}
