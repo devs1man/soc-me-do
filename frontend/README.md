@@ -23,10 +23,3 @@ This is the frontend of **Movie Night Planner**, a web application designed to s
 ! [homepage ss](./public/screenshots/homepage2.png)
 ! [homepage ss](./public/screenshots/homepage3.png)
 ! [homepage ss](./public/screenshots/homepage4.png)
-
-# React + Vite
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
