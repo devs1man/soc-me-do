@@ -1,120 +1,42 @@
-/* Make your main container transparent so the #root background shows through */
-.app-container,
-.home-wrapper {
-  background-color: transparent;
-}
-
-/* Intro “hero card” */
-.intro-card {
-  background: rgba(0, 0, 0, 0.7);
-  padding: 40px 30px;
-  border-radius: 12px;
-  text-align: center;
-  margin: 40px auto;
-  max-width: 700px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-.intro-card h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.intro-card p {
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-}
-
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.discover-btn,
-.watchlist-btn {
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-weight: bold;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-}
-
-.discover-btn {
-  background-color: #f44336;
-  color: white;
-}
-
-.discover-btn:hover {
-  background-color: #d32f2f;
-}
-
-.watchlist-btn {
-  background-color: #2196f3;
-  color: white;
-}
-
-.watchlist-btn:hover {
-  background-color: #1976d2;
-}
-
-/* OTT Section Wrapper */
-.ott-section {
-  background: rgba(0, 0, 0, 0.7);
-  margin: 40px auto;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 1200px;
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
   text-align: center;
 }
 
-.ott-section h2 {
-  margin-bottom: 20px;
-  font-size: 1.8rem;
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-/* Movie grid */
-.ott-grid,
-.movies-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* Individual movie card */
-.ott-card,
-.movie-card {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  width: 150px;
-  padding: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
 }
 
-.ott-card:hover,
-.movie-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+.card {
+  padding: 2em;
 }
 
-.ott-card img,
-.movie-card img {
-  width: 100%;
-  height: 225px;
-  object-fit: cover;
-  border-radius: 6px;
-}
-
-.ott-card h3,
-.movie-card h3 {
-  margin: 8px 0 4px;
-  font-size: 1rem;
-  color: #fff;
-}
-
-.ott-card p,
-.movie-card p {
-  font-size: 0.85rem;
-  color: #ddd;
+.read-the-docs {
+  color: #888;
 }
