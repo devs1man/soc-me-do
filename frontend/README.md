@@ -1,12 +1,31 @@
-# React + Vite
+# 🎬 Movie Night Planner - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The frontend of Movie Night Planner is a dynamic, responsive React-based interface that helps users discover, save, and plan their perfect movie nights. It supports a full authentication flow, personalized watchlist/favourites management, and a stylish, cinematic experience.
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React** with Vite
+- **Tailwind CSS**
+- **Framer Motion** for animations
+- **Radix UI** for components
+- **Axios** for API requests
+- **TMDB API** for movie data
+- **React Router** for navigation
 
-## Expanding the ESLint configuration
+## 📦 Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 🔐 Login/Register system with localStorage token storage
+- 🎥 Trending movies fetched from TMDB API
+- ❤️ Add/remove movies to/from Favourites
+- 👁️ Add/remove movies to/from Watchlist
+- 🧾 View and edit Profile (name, email, avatar)
+- 🪄 Tabbed UI for profile sections (Favourites, Watchlist, Reviews)
+- 🎨 Beautiful animations and responsive design
+
+## 🔧 Getting Started
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/movie-night-planner.git
+   cd movie-night-planner/frontend
+   ```
