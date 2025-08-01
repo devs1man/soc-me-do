@@ -19,6 +19,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  watchlist: {
+    type: [Number],
+
+    default: [],
+  },
+
+  favourites: {
+    type: [Number],
+
+    default: [],
+  },
 });
 
 userSchema.pre("save", async function (next) {

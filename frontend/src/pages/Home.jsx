@@ -19,15 +19,120 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const [trending, setTrending] = useState([]); // 🔄 Store trending movies
-  const [selectedMovie, setSelectedMovie] = useState(null); // 🎬 Modal movie
-  const [showDialog, setShowDialog] = useState(false); // 🔒 Login dialog state
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [trending, setTrending] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
+  // Genre list (same as Discover)
+  const genreOptions = [
+    { label: "Action", value: "28" },
+    { label: "Adventure", value: "12" },
+    { label: "Animation", value: "16" },
+    { label: "Comedy", value: "35" },
+    { label: "Crime", value: "80" },
+    { label: "Documentary", value: "99" },
+    { label: "Drama", value: "18" },
+    { label: "Family", value: "10751" },
+    { label: "Fantasy", value: "14" },
+    { label: "History", value: "36" },
+    { label: "Horror", value: "27" },
+    { label: "Music", value: "10402" },
+    { label: "Mystery", value: "9648" },
+    { label: "Romance", value: "10749" },
+    { label: "Science Fiction", value: "878" },
+    { label: "TV Movie", value: "10770" },
+    { label: "Thriller", value: "53" },
+    { label: "War", value: "10752" },
+    { label: "Western", value: "37" },
+  ];
+
+  const isInFavourites = (movieId) =>
+    user?.user?.favourites?.some((movie) => movie.id === movieId);
+  const isInWatchlist = (movieId) =>
+    user?.user?.watchlist?.some((movie) => movie.id === movieId);
+  const toggleFavourites = async (movie) => {
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/api/users/${user.user.id}/favourites`,
+        {
+          movie: {
+            tmdbId: movie.id,
+          },
+        },
+
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      const updatedUser = {
+        ...user,
+        user: {
+          ...user.user,
+          favourites: res.data,
+        },
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    } catch (err) {
+      console.error(
+        "Failed to update favourites",
+        err.response?.data || err.message
+      );
+    }
+  };
+  const toggleWatchlist = async (movie) => {
+    if (!user || !user.user || !user.user.id) {
+      alert("Please log in to add to watchlist");
+      return;
+    } else {
+      console.log("No issue with the user");
+    }
+
+    try {
+      console.log("WATCHLIST REQUEST PAYLOAD:", {
+        movie: { tmdbId: movie.id },
+      });
+      const res = await axios.post(
+        `http://localhost:5000/api/users/${user.user.id}/watchlist`,
+        {
+          movie: {
+            tmdbId: movie.id,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      const updatedUser = {
+        ...user,
+        user: {
+          ...user.user,
+          watchlist: res.data,
+        },
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    } catch (err) {
+      console.error("failed to update watchlist", err);
+    }
+  };
   useEffect(() => {
-    localStorage.setItem("loggedIn", "true"); // IF wanting to check what happens when logged in
-    const loggedIn = localStorage.getItem("loggedIn") === "true"; // check if loggedin is true or not
-    setIsLoggedIn(loggedIn);
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser && storedUser.token) {
+      setIsLoggedIn(true);
+    } else {
+      localStorage.removeItem("user");
+      localStorage.setItem("loggedIn", "false");
+      setIsLoggedIn(false);
+    }
   }, []);
 
   const navigate = useNavigate();
@@ -44,8 +149,11 @@ const Home = () => {
     };
     fetchTrending();
   }, []);
-
   const handleProtectedRoute = (route) => {
+    if (route === "/discover" || route === "/home") {
+      navigate(route);
+      return;
+    }
     if (isLoggedIn) {
       navigate(route);
     } else {
@@ -69,6 +177,7 @@ const Home = () => {
             { label: "Home", route: "/home" },
             { label: "Discover", route: "/discover" },
             { label: "Watchlist", route: "/watchlist" },
+            { label: "Favourites", route: "/favourite" },
             { label: "Planner", route: "/planner" },
           ].map(({ label, route }) => (
             <button
@@ -149,19 +258,14 @@ const Home = () => {
               key={movie.id}
               whileHover={{ scale: 1.05 }}
               className="relative min-w-[150px] max-w-[150px] cursor-pointer"
-              onClick={() => {
-                if (!isLoggedIn) {
-                  setShowDialog(true);
-                } else {
-                  setSelectedMovie(movie);
-                }
-              }}
+              onClick={() => setSelectedMovie(movie)}
             >
               <img
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
                 className="rounded-lg shadow-md"
               />
+
               <div className="absolute top-2 left-2 bg-yellow-500 text-black px-2 py-0.5 text-xs font-bold rounded">
                 ⭐ {movie.vote_average.toFixed(1)}
               </div>
@@ -188,6 +292,12 @@ const Home = () => {
               desc: "Save and organize picks",
             },
             {
+              icon: "❤️",
+              title: "Favorite",
+              route: "/favourite",
+              desc: "Saves favorite movies ",
+            },
+            {
               icon: "🗳️",
               title: "Vote",
               route: "/planner",
@@ -210,54 +320,112 @@ const Home = () => {
       </section>
 
       {/* 🎬 Movie Description Modal */}
-      <AnimatePresence>
-        {selectedMovie && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
-            onClick={() => setSelectedMovie(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              transition={{ duration: 0.3 }}
-              className="bg-[#1a1a1a] text-white rounded-xl p-6 max-w-4xl w-full mx-4 relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className="absolute top-2 right-3 text-2xl text-white"
-                onClick={() => setSelectedMovie(null)}
-              >
-                &times;
-              </button>
+
+      <Dialog
+        open={!!selectedMovie}
+        onOpenChange={() => setSelectedMovie(null)}
+      >
+        <DialogContent className="max-w-4xl bg-zinc-900 text-white p-6 rounded-xl border-zinc-900">
+          {selectedMovie ? (
+            <>
+              <DialogTitle className="text-2xl mb-2 text-yellow-400">
+                {selectedMovie.title}
+              </DialogTitle>
+
               <div className="flex flex-col md:flex-row gap-6">
-                <img
-                  src={
-                    "https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}"
-                  }
-                  alt={selectedMovie.title}
-                  className="w-full md:w-1/3 rounded-lg"
-                />
-                <div className="flex-1 space-y-4">
-                  <h2 className="text-2xl font-bold text-yellow-400">
-                    {selectedMovie.title}
-                  </h2>
-                  <p>{selectedMovie.overview || "No description available."}</p>
-                  <p className="text-sm text-yellow-400">
-                    ⭐ {selectedMovie.vote_average?.toFixed(1)}
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    📅 {selectedMovie.release_date}
-                  </p>
+                {/* 🎬 Poster */}
+                {selectedMovie.poster_path && (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`}
+                    alt={selectedMovie.title}
+                    className="w-full md:w-1/3 h-80 object-contain rounded-lg"
+                  />
+                )}
+
+                {/* ℹ️ Info + Buttons Right Side */}
+                <div className="flex-1 flex flex-col md:flex-row justify-between gap-6">
+                  {/* 📖 Info Section */}
+                  <div className="space-y-4 md:w-2/3">
+                    <p>
+                      {selectedMovie.overview || "No description available."}
+                    </p>
+
+                    {/* 📺 OTT Providers */}
+                    {selectedMovie.ott?.length > 0 ? (
+                      <div className="mt-4">
+                        <p className="font-bold text-3xl text-yellow-300 mb-1">
+                          📺 Available On:
+                        </p>
+                        <ul className="list-disc list-inside space-y-1">
+                          {selectedMovie.ott.map((provider) => (
+                            <li
+                              key={provider}
+                              className="text-white font-medium"
+                            >
+                              ✅ {provider}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <p className="text-gray-400 mt-4">
+                        📵 No OTT info available
+                      </p>
+                    )}
+
+                    {/* ⭐ Rating & 📅 Release */}
+                    <p className="text-3xl text-yellow-400">
+                      ⭐ {selectedMovie.vote_average?.toFixed(1)}
+                    </p>
+                    <p className="text-l text-gray-400">
+                      📅 {selectedMovie.release_date || "Unknown"}
+                    </p>
+
+                    {/* 🎭 Genre Chips */}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {selectedMovie.genre_ids?.map((id) => {
+                        const genre = genreOptions.find(
+                          (g) => g.value === String(id)
+                        );
+                        return (
+                          <span
+                            key={id}
+                            className="px-2 py-1 rounded-full text-sm bg-yellow-600 text-black font-semibold"
+                          >
+                            {genre?.label}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* ❤️ Watchlist & Favourite Buttons */}
+                  <div className="flex flex-col gap-4 md:w-1/3">
+                    <Button
+                      variant="ghost"
+                      className="w-full text-yellow-400"
+                      onClick={() => toggleFavourites(selectedMovie)}
+                    >
+                      {isInFavourites(selectedMovie.id)
+                        ? "Remove from Favourites"
+                        : "Add to Favourites"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="w-full text-yellow-400"
+                      onClick={() => toggleWatchlist(selectedMovie)}
+                    >
+                      {isInWatchlist(selectedMovie.id)
+                        ? "Remove from Watchlist"
+                        : "Add to Watchlist"}
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </>
+          ) : null}
+        </DialogContent>
+      </Dialog>
 
       {/* 🔒 Login Required Dialog */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>

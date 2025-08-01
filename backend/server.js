@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 
 dotenv.config();
 
+app.use("/api/users", require("./routes/userRoutes"));
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {

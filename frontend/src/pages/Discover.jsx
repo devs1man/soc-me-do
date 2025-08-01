@@ -6,11 +6,23 @@ import { motion, useInView } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import FiltersSidebar from "@/components_movie/Filter";
+import { Button } from "@/components/ui/button";
 import {
-  Dialog,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  
+} from "@/components/ui/dropdown-menu";
+
+import {
+   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
+   DialogDescription,
+  DialogFooter,
+  DialogHeader
+
 } from "@/components/ui/dialog";
 
 const genreOptions = [
@@ -35,12 +47,33 @@ const genreOptions = [
   { label: "Western", value: "37" },
 ];
 
+const isInWatchlist = (id) => {
+  const list = JSON.parse(localStorage.getItem("watchlist") || "[]");
+  return list.some((m) => m.id === id);
+};
+
+
+const isInFavourites = (id) => {
+  const favs = JSON.parse(localStorage.getItem("favourites") || "[]");
+  return favs.some((m) => m.id === id);
+};
+
+
 // Child component for each movie card
-const MovieCard = ({ movie, index, onClick }) => {
+const MovieCard = ({
+  movie,
+  index,
+  onClick,
+  isLoggedIn,
+  onLoginPrompt,
+  toggleFavourites,
+  toggleWatchlist,
+  isInFavourites,
+  isInWatchlist,
+}) => {
   const cardRef = useRef(null);
   const isCardInView = useInView(cardRef, { triggerOnce: true, margin: "-100px" });
   const cappedIndex = index % 6;
-
   return (
     <motion.div
       ref={cardRef}
@@ -61,9 +94,35 @@ const MovieCard = ({ movie, index, onClick }) => {
         <h3 className="text-lg font-bold">{movie.title}</h3>
         <p className="text-yellow-400 text-sm">⭐ {movie.vote_average?.toFixed(1)}</p>
       </div>
+      <div className="flex justify-between items-center mt-2 px-2">
+  <Button
+    variant="ghost"
+    size="sm"
+    className="text-xs text-yellow-400"
+    onClick={(e) => {
+      e.stopPropagation();
+      isLoggedIn ? toggleWatchlist(movie) : onLoginPrompt();
+    }}
+  >
+    {isInWatchlist(movie.id) ? "★ Watchlist" : "+ Watchlist"}
+  </Button>
+  <Button
+    variant="ghost"
+    size="sm"
+    className="text-xs text-yellow-400"
+    onClick={(e) => {
+      e.stopPropagation();
+      isLoggedIn ? toggleFavourites(movie) : onLoginPrompt();
+    }}
+  >
+    {isInFavourites(movie.id) ? "❤️ Favourite" : "+ Favourite"}
+  </Button>
+</div>
+
     </motion.div>
   );
 };
+
 
 const Discover = () => {
   const [movies, setMovies] = useState([]);
@@ -71,6 +130,66 @@ const Discover = () => {
   const [filters, setFilters] = useState({ genre: "", language: "", rating: "", year: "", ott: "" });
   const [animationTrigger, setAnimationTrigger] = useState(false);
   const navigate = useNavigate();
+  // LocalStorage helpers
+const getLocalList = (key) => JSON.parse(localStorage.getItem(key) || "[]");
+const saveLocalList = (key, list) => localStorage.setItem(key, JSON.stringify(list));
+const [refreshToggle, setRefreshToggle] = useState(false);
+
+const [showDialog, setShowDialog] = useState(false);
+const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
+useEffect(() => {
+  const loggedIn = localStorage.getItem("loggedIn") === "true";
+  setIsLoggedIn(loggedIn);
+}, []);
+
+
+
+
+
+
+const handleProtectedRoute = (route) => {
+  if (route === "/discover" || route === "/home") {
+    navigate(route);
+    return;
+  }
+  if (isLoggedIn) {
+    navigate(route);
+  } else {
+    setShowDialog(true);
+  }
+};
+
+
+
+const toggleFavourites = (movie) => {
+  const favs = JSON.parse(localStorage.getItem("favourites") || "[]");
+  const exists = favs.find((m) => m.id === movie.id);
+  const updated = exists
+    ? favs.filter((m) => m.id !== movie.id)
+    : [...favs, movie];
+  localStorage.setItem("favourites", JSON.stringify(updated));
+  setRefreshToggle((prev) => !prev); // trigger UI update
+};
+
+
+
+
+const toggleWatchlist = (movie) => {
+  const list = JSON.parse(localStorage.getItem("watchlist") || "[]");
+  const exists = list.find((m) => m.id === movie.id);
+  const updated = exists
+    ? list.filter((m) => m.id !== movie.id)
+    : [...list, movie];
+
+  localStorage.setItem("watchlist", JSON.stringify(updated));
+  setRefreshToggle((prev) => !prev); // ✅ Trigger re-render
+};
+
+
+
+
 
   // For Search BAR
   const [searchQuery, setSearchQuery] = useState("");
@@ -304,15 +423,47 @@ const Discover = () => {
           🍿 Movie Night
         </h1>
         <nav className="flex gap-6 items-center text-base">
-          {["Home", "Discover", "Watchlist", "Planner"].map((label) => (
+          {[
+            { label: "Home", route: "/home" },
+            { label: "Discover", route: "/discover" },
+            { label: "Watchlist", route: "/watchlist" },
+            { label: "Favourites",route: "/favourite"},
+            { label: "Planner", route: "/planner" },
+          ].map(({ label, route }) => (
             <button
               key={label}
+              onClick={() => handleProtectedRoute(route)}
               className="hover:text-yellow-400 transition-colors duration-200"
-              onClick={() => navigate(`/${label.toLowerCase()}`)}
             >
               {label}
             </button>
           ))}
+          <DropdownMenu>
+  <DropdownMenuTrigger>
+    <div className="w-8 h-8 bg-white rounded-full shadow cursor-pointer" />
+  </DropdownMenuTrigger>
+  <DropdownMenuContent className="bg-white text-black">
+    {isLoggedIn ? (
+      <>
+        <DropdownMenuItem onClick={() => navigate("/profile")}>Profile</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            localStorage.setItem("loggedIn", "false");
+            setIsLoggedIn(false); // ✅ updates UI without refresh
+          }}
+        >
+          Logout
+        </DropdownMenuItem>
+      </>
+    ) : (
+      <>
+        <DropdownMenuItem onClick={() => navigate("/login")}>Login</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/login", { state: { tab: "register" } })}>Register</DropdownMenuItem>
+      </>
+    )}
+  </DropdownMenuContent>
+</DropdownMenu>
+
         </nav>
       </header>
 
@@ -340,68 +491,142 @@ const Discover = () => {
         {/* Movie Cards Container */}
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-8">
           {movies.map((movie, index) => (
-            <MovieCard key={movie.id} movie={movie} index={index} onClick={handleMovieClick} />
+            <MovieCard
+  key={movie.id}
+  movie={movie}
+  index={index}
+  onClick={handleMovieClick}
+  isLoggedIn={true} // or check localStorage.getItem("user")
+  onLoginPrompt={() => toast.error("Please login first")}
+  toggleFavourites={toggleFavourites}
+  toggleWatchlist={toggleWatchlist}
+  isInFavourites={isInFavourites}
+  isInWatchlist={isInWatchlist}
+/>
+
           ))}
         </div>
       </div>
 
       {/* Movie Info + Trailer Modal */}
       <Dialog open={!!selectedMovie} onOpenChange={() => setSelectedMovie(null)}>
-        <DialogContent className="max-w-4xl bg-zinc-900 text-white p-6 rounded-xl border-zinc-900">
-          {selectedMovie && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-2xl mb-2 text-yellow-400">{selectedMovie.title}</DialogTitle>
-              </DialogHeader>
+  <DialogContent className="max-w-4xl bg-zinc-900 text-white p-6 rounded-xl border-zinc-900">
+    {selectedMovie ? (
+      <>
+        <DialogHeader>
+          <DialogTitle className="text-2xl mb-2 text-yellow-400">
+            {selectedMovie.title}
+          </DialogTitle>
+        </DialogHeader>
 
-              <div className="flex flex-col md:flex-row gap-6">
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`}
-                  alt={selectedMovie.title}
-                  className="w-full md:w-1/3 h-80 object-contain rounded-lg"
-                />
-
-                <div className="flex-1 space-y-4">
-                  <p>{selectedMovie.overview}</p>
-
-                  {selectedMovie.ott?.length > 0 ? (
-                    <div className="mt-4">
-                      <p className="font-bold text-3xl text-yellow-300 mb-1">📺 Available On:</p>
-                      <ul className="list-disc list-inside space-y-1">
-                        {selectedMovie.ott.map((provider) => (
-                          <li key={provider} className="text-white font-medium">
-                            ✅ {provider}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : (
-                    <p className="text-gray-400 mt-4">📵 No OTT info available</p>
-                  )}
-
-                  <p className="text-3xl text-yellow-400">⭐ {selectedMovie.vote_average?.toFixed(1)}</p>
-                  <p className="text-l text-gray-400">📅 {selectedMovie.release_date}</p>
-
-                  {/* Genre Chips */}
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {selectedMovie.genre_ids?.map((id) => {
-                      const genre = genreOptions.find((g) => g.value === String(id));
-                      return (
-                        <span
-                          key={id}
-                          className="px-2 py-1 rounded-full text-sm bg-yellow-600 text-black font-semibold"
-                        >
-                          {genre?.label}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </>
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* 🎬 Poster */}
+          {selectedMovie.poster_path && (
+            <img
+              src={`https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`}
+              alt={selectedMovie.title}
+              className="w-full md:w-1/3 h-80 object-contain rounded-lg"
+            />
           )}
+
+          {/* ℹ️ Info + Buttons Right Side */}
+          <div className="flex-1 flex flex-col md:flex-row justify-between gap-6">
+            {/* 📖 Info Section */}
+            <div className="space-y-4 md:w-2/3">
+              <p>{selectedMovie.overview || "No description available."}</p>
+
+              {selectedMovie.ott?.length > 0 ? (
+                <div className="mt-4">
+                  <p className="font-bold text-3xl text-yellow-300 mb-1">📺 Available On:</p>
+                  <ul className="list-disc list-inside space-y-1">
+                    {selectedMovie.ott.map((provider) => (
+                      <li key={provider} className="text-white font-medium">
+                        ✅ {provider}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="text-gray-400 mt-4">📵 No OTT info available</p>
+              )}
+
+              <p className="text-3xl text-yellow-400">
+                ⭐ {selectedMovie.vote_average?.toFixed(1)}
+              </p>
+              <p className="text-l text-gray-400">
+                📅 {selectedMovie.release_date || "Unknown"}
+              </p>
+
+              {/* 🎭 Genre Chips */}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {selectedMovie.genre_ids?.map((id) => {
+                  const genre = genreOptions.find((g) => g.value === String(id));
+                  return (
+                    <span
+                      key={id}
+                      className="px-2 py-1 rounded-full text-sm bg-yellow-600 text-black font-semibold"
+                    >
+                      {genre?.label}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* ❤️ Watchlist & Favourite Buttons */}
+            <div className="flex flex-col gap-4 md:w-1/3 ">
+              <Button
+                variant="ghost"
+                className="w-full text-yellow-400"
+                onClick={() => toggleFavourites(selectedMovie)}
+              >
+                {isInFavourites(selectedMovie.id)
+                  ? "Remove from Favourites"
+                  : "Add to Favourites"}
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full text-yellow-400"
+                onClick={() => toggleWatchlist(selectedMovie)}
+              >
+                {isInWatchlist(selectedMovie.id)
+                  ? "Remove from Watchlist"
+                  : "Add to Watchlist"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </>
+    ) : null}
+  </DialogContent>
+</Dialog>
+
+
+ {/* 🔒 Login Required Dialog */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="bg-black text-white border-white max-w-sm">
+          <DialogTitle>Please Login</DialogTitle>
+          <DialogDescription className="text-gray-300">
+            You need to login to use this feature.
+          </DialogDescription>
+          <DialogFooter className="flex justify-end gap-2">
+            <Button
+              className="text-black"
+              variant="outline"
+              onClick={() => setShowDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="bg-yellow-500 hover:bg-yellow-600"
+              onClick={() => navigate("/login")}
+            >
+              Login Now
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </motion.div>
   );
 };

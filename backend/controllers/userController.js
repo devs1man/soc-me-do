@@ -1,6 +1,8 @@
 const User = require("../models/User");
 
 const registerUser = async (req, res) => {
+  console.log("i am in");
+  console.log("request body", req.body);
   const { name, email, password } = req.body;
   try {
     const userExists = await User.findOne({ email });
@@ -85,8 +87,73 @@ const searchUsers = async (req, res) => {
   }
 };
 
+const toggleWatchlist = async (req, res) => {
+  console.log("TOGGLEWATCHLIST HIT!");
+  try {
+    const userId = req.params.userId;
+    const movie = req.body.movie;
+    if (!movie || !movie.tmdbId) {
+      return res.status(400).json({ message: "Invalis movie data" });
+    }
+    const tmdbId = movie.tmdbId;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const index = user.watchlist.findIndex((item) => item.tmdbId === tmdbId);
+    console.log("Toggle watchlist request body:", req.body);
+    if (index > -1) {
+      user.watchlist.splice(index, 1);
+    } else {
+      user.watchlist.push(tmdbId);
+    }
+    console.log("Before save:", user.watchlist);
+    await user.save();
+    res.status(200).json(user.watchlist);
+  } catch (error) {
+    console.error("togglewatchlist error: ", error.message);
+    console.error(error.stack);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const toggleFavourites = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { tmdbId } = req.body.movie;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const index = user.favourites.findIndex((item) => item.tmdbId === tmdbId);
+    if (index > -1) {
+      user.favourites.splice(index, 1);
+    } else {
+      user.favourites.push(tmdbId);
+    }
+    await user.save();
+    res.status(200).json(user.favourites);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getProfile = async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  res.json({
+    name: user.name,
+    email: user.email,
+    avatar: user.avatar,
+    watchlist: user.watchlist,
+    favourites: user.favourites,
+    watchlistCount: user.watchlist.length,
+    favouritesCount: user.favourites.length,
+  });
+};
+
 module.exports = {
   registerUser,
   loginUser,
   searchUsers,
+  toggleFavourites,
+  toggleWatchlist,
+  getProfile,
 };
