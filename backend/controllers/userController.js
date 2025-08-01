@@ -92,6 +92,7 @@ const toggleWatchlist = async (req, res) => {
   try {
     const userId = req.params.userId;
     const movie = req.body.movie;
+
     if (!movie || !movie.tmdbId) {
       return res.status(400).json({ message: "Invalis movie data" });
     }

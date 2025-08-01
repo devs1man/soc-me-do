@@ -19,11 +19,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  watchlist: {
-    type: [Number],
-
-    default: [],
-  },
+  watchlist: [
+    {
+      id: Number,
+      title: String,
+      poster_path: String,
+    },
+  ],
 
   favourites: {
     type: [Number],
